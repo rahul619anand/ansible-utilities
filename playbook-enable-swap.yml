@@ -1,0 +1,24 @@
+- hosts: 127.0.0.1
+  become: true
+  gather_facts: true
+  tasks:
+    - name: create the file to be used for swap
+      command: fallocate -l 1G /swapfile
+
+    - name: change swap file permissions
+      file: path=/swapfile owner=root group=root mode=0600
+
+    - name: format the file for swap
+      command: mkswap /swapfile
+
+    - name: add the file to the system as a swap file
+      command: swapon /swapfile
+
+    - name: write swap entry in fstab
+      mount: name=swap src=/swapfile fstype=swap opts=defaults passno=0 dump=0 state=present
+
+    - sysctl:
+        name: vm.swappiness
+        value: 1
+        state: present
+        ignoreerrors: yes
