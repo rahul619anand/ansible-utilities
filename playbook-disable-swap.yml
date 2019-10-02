@@ -1,0 +1,9 @@
+- hosts: 127.0.0.1
+  become: true
+  gather_facts: true
+  tasks:
+    - name: create the file to be used for swap
+      command: sudo swapoff -v /swapfile
+
+    - name: delete the file to be used for swap
+      command: sudo rm /swapfile
